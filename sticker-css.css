@@ -1,0 +1,164 @@
+:root {
+  --sticker-width: 250px;
+  --sticker-height: 40px;
+  --speed-corner: 0.5s;
+  --speed-stripe: 1.8s;
+  --sticker-color: #0276b1;
+  --sticker-back-color: #bde8fe;
+}
+
+/* Animations Start */
+@keyframes corner-stripe {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: calc(100% - var(--sticker-height));
+  }
+}
+
+@keyframes stripe {
+  0% {
+    width: calc(100% - var(--sticker-height));
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes corner-undercorner {
+  0% {
+    height: var(--sticker-height);
+  }
+  100% {
+    height: 0;
+  }
+}
+
+@keyframes corner-back {
+  0% {
+    width: 0;
+    height: 0;
+  }
+  100% {
+    width: var(--sticker-height);
+    height: var(--sticker-height);
+  }
+}
+
+@keyframes stripe-back {
+  0% {
+    right: 0;
+    width: var(--sticker-height);
+    height: var(--sticker-height);
+    background-position: 0 0;
+  }
+  100% {
+    right: calc(var(--sticker-width) - var(--sticker-height));
+    width: var(--sticker-height);
+    height: calc(
+      (var(--sticker-width) - var(--sticker-height) * 2) * 2 +
+        var(--sticker-height)
+    );
+    background-position: 0
+      calc(-1 * (var(--sticker-width) - var(--sticker-height) * 2));
+  }
+}
+/* Animations End */
+
+.container {
+  margin-top: 50px;
+  width: var(--sticker-width);
+}
+
+/* Sticker */
+.sticker {
+  position: relative;
+  height: var(--sticker-height);
+
+  /* Main part */
+  .stripe {
+    position: relative;
+    z-index: 1;
+    background-color: var(--sticker-color);
+    height: var(--sticker-height);
+    width: 100%;
+
+    span {
+      display: block;
+      padding-left: 15px;
+      line-height: var(--sticker-height);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  /* Back and corner */
+  .back {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    width: 0;
+    height: 0;
+    background: linear-gradient(
+      224deg,
+      transparent,
+      transparent 45%,
+      transparent 50%,
+      var(--sticker-back-color) 50%,
+      var(--sticker-back-color) 100%
+    );
+  }
+
+  .back-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    /* Right justify */
+    width: 100%;
+    height: var(--sticker-height);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .coupon {
+      padding-right: 10px;
+    }
+  }
+
+  /* Small box under unfolding corner */
+  &:after {
+    content: "";
+    position: absolute;
+    display: block;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    width: 100%;
+    height: var(--sticker-height);
+    background: var(--sticker-color);
+  }
+
+  &:hover {
+    .stripe {
+      animation: corner-stripe var(--speed-corner) 1 forwards ease-in,
+        stripe var(--speed-stripe) 1 forwards
+          cubic-bezier(0.88, 0.87, 0.74, 0.49);
+      animation-delay: 0s, var(--speed-corner);
+    }
+
+    .back {
+      animation: corner-back var(--speed-corner) 1 forwards ease-in,
+        stripe-back var(--speed-stripe) 1 forwards
+          cubic-bezier(0.88, 0.87, 0.74, 0.49);
+      animation-delay: 0s, var(--speed-corner),
+        calc(var(--speed-corner) + var(--speed-stripe));
+    }
+
+    &:after {
+      animation: corner-undercorner var(--speed-corner) 1 forwards ease-in;
+    }
+  }
+}
